@@ -51,11 +51,11 @@ const Upcoming = () => {
   const upcomingTasks = useMemo(() => {
     const today = startOfDay(new Date());
     return tasks.filter(task => {
-      if (!task.dueDate) return false;
-      const taskDate = startOfDay(new Date(task.dueDate));
+if (!task.due_date && !task.dueDate) return false;
+      const taskDate = startOfDay(new Date(task.due_date || task.dueDate));
       return isAfter(taskDate, today);
     }).sort((a, b) => {
-      return new Date(a.dueDate) - new Date(b.dueDate);
+return new Date(a.due_date || a.dueDate) - new Date(b.due_date || b.dueDate);
     });
   }, [tasks]);
 
@@ -63,7 +63,7 @@ const Upcoming = () => {
     const groups = {};
     
     upcomingTasks.forEach(task => {
-      const taskDate = startOfDay(new Date(task.dueDate));
+const taskDate = startOfDay(new Date(task.due_date || task.dueDate));
       const dateKey = format(taskDate, 'yyyy-MM-dd');
       
       if (!groups[dateKey]) {

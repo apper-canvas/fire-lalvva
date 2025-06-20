@@ -51,8 +51,8 @@ const Today = () => {
   const todayTasks = useMemo(() => {
     const today = new Date();
     return tasks.filter(task => {
-      if (!task.dueDate) return false;
-      const taskDate = new Date(task.dueDate);
+if (!task.due_date && !task.dueDate) return false;
+      const taskDate = new Date(task.due_date || task.dueDate);
       return isToday(taskDate);
     }).sort((a, b) => {
       // Sort by priority (high first), then by due time
@@ -60,7 +60,7 @@ const Today = () => {
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
       
-      return new Date(a.dueDate) - new Date(b.dueDate);
+return new Date(a.due_date || a.dueDate) - new Date(b.due_date || b.dueDate);
     });
   }, [tasks]);
 

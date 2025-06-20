@@ -55,8 +55,8 @@ const AllTasks = () => {
         return false;
       }
 
-      // Category filter
-      if (filters.categoryId && task.categoryId !== filters.categoryId) {
+// Category filter
+      if (filters.categoryId && (task.category_id || task.categoryId) !== filters.categoryId) {
         return false;
       }
 
@@ -74,8 +74,9 @@ const AllTasks = () => {
   const taskCounts = useMemo(() => {
     const counts = {};
     tasks.forEach(task => {
-      if (!task.completed) {
-        counts[task.categoryId] = (counts[task.categoryId] || 0) + 1;
+if (!task.completed) {
+        const categoryId = task.category_id || task.categoryId;
+        counts[categoryId] = (counts[categoryId] || 0) + 1;
       }
     });
     return counts;

@@ -1,14 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import TaskList from '@/components/organisms/TaskList';
-import SkeletonLoader from '@/components/molecules/SkeletonLoader';
-import ErrorState from '@/components/molecules/ErrorState';
-import Input from '@/components/atoms/Input';
-import Button from '@/components/atoms/Button';
-import ApperIcon from '@/components/ApperIcon';
-import { taskService, categoryService } from '@/services';
-import { toast } from 'react-toastify';
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import ErrorState from "@/components/molecules/ErrorState";
+import SkeletonLoader from "@/components/molecules/SkeletonLoader";
+import TaskList from "@/components/organisms/TaskList";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import { categoryService, taskService } from "@/services/index";
 
 const Archive = () => {
   const [tasks, setTasks] = useState([]);
@@ -76,23 +76,23 @@ const Archive = () => {
     } catch (error) {
       toast.error('Failed to clear archive');
     }
-  };
+};
 
   const completedTasks = useMemo(() => {
     return tasks
       .filter(task => task.completed)
       .filter(task => {
         if (!searchQuery) return true;
-        return task.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const searchText = task.Name || task.title || '';
+        return searchText.toLowerCase().includes(searchQuery.toLowerCase());
       })
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .sort((a, b) => new Date(b.created_at || b.createdAt) - new Date(a.created_at || a.createdAt));
   }, [tasks, searchQuery]);
-
-  const stats = useMemo(() => {
+const stats = useMemo(() => {
     const totalCompleted = tasks.filter(t => t.completed).length;
     const thisWeek = tasks.filter(t => {
       if (!t.completed) return false;
-      const taskDate = new Date(t.createdAt);
+      const taskDate = new Date(t.created_at || t.createdAt);
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
       return taskDate >= weekAgo;
